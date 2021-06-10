@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import ImageCard from './Components/ImageCard/ImageCard';
 
 function App() {
+  const [images, setImages] = useState([])
+  const [term, setTerm] = useState('')
+  const [isLoading, setIsloading] = useState(true)
+
+
+  useEffect(() => {
+    fetch(`https://pixabay.com/api/?key=22024005-f110f57eb240415b69962f8c9&q=${term}&image_type=photo&pretty=true`)
+    .then(res => res.json())
+    .then(data => {
+      setImages(data.hits)
+      setIsloading(false)
+    })
+    .catch(err =>console.log(err))
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mx-auto">
+      <div className="grid grid-cols-3 gap-4">
+      {
+        images.map(img => <ImageCard image={img} key={img.id}></ImageCard>)
+      }
+      </div> 
     </div>
   );
 }
